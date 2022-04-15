@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-on-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-on-k8s
+  template:
+    metadata:
+      labels:
+        app: spring-on-k8s
+    spec:
+      containers:
+      - image: ghcr.io/alexandreroman/spring-on-k8s
+        name: app
+        resources:
+          limits:
+            memory: 1Gi
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/liveness
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/readiness
+        volumeMounts:
+          - mountPath: /app-data
+            name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: spring-on-k8s-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: spring-on-k8s-data
+spec:
+  storageClassName: fake-sc
+  accessModes:
+  - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi

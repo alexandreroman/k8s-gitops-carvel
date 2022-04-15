@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+---
+#@ def labels(comp):
+app.kubernetes.io/part-of: #@ data.values.app.name
+app.kubernetes.io/version: #@ data.values.app.version
+app.kubernetes.io/instance: #@ "{}-{}".format(data.values.app.name, data.values.env.name)
+app.kubernetes.io/component: #@ comp
+#@ end
+---
+#@ def namespace():
+#@  return "{}-{}".format(data.values.app.name, data.values.env.name)
+#@ end

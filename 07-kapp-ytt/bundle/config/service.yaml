@@ -1,0 +1,16 @@
+#@ load("@ytt:data", "data")
+#@ load("helpers.lib.yml", "namespace", "labels")
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: #@ namespace()
+  labels: #@ labels("app")
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector: #@ labels("app")

@@ -1,0 +1,102 @@
+#@ load("@ytt:data", "data")
+---
+#@ def labels(comp):
+app.kubernetes.io/part-of: #@ data.values.app.name
+app.kubernetes.io/version: #@ data.values.app.version
+app.kubernetes.io/instance: #@ "{}-{}".format(data.values.app.name, data.values.env.name)
+app.kubernetes.io/component: #@ comp
+#@ end
+---
+#@ def namespace():
+#@  return "{}-{}".format(data.values.app.name, data.values.env.name)
+#@ end
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ namespace()
+  labels: #@ labels("app")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: #@ namespace()
+  labels: #@ labels("app")
+spec:
+  replicas: #@ data.values.app.replicas
+  selector:
+    matchLabels: #@ labels("app")
+  template:
+    metadata:
+      labels: #@ labels("app")
+    spec:
+      containers:
+      - image: ghcr.io/alexandreroman/spring-on-k8s
+        name: app
+        resources:
+          limits:
+            memory: 1Gi
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/liveness
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/readiness
+        env:
+        #! Read the ConfigMap mounted as a volume under /etc/config.
+        - name: SPRING_CONFIG_IMPORT
+          value: configtree:/etc/config/
+        volumeMounts:
+        - mountPath: /etc/config
+          name: config
+      volumes:
+      - name: config
+        configMap:
+          name: app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app
+  namespace: #@ namespace()
+  labels: #@ labels("app")
+data:
+  app.message: #@ data.values.app.conf.message
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: #@ namespace()
+  labels: #@ labels("app")
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector: #@ labels("app")
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app
+  namespace: #@ namespace()
+  labels: #@ labels("app")
+spec:
+  rules:
+  - host: #@ "springonk8s.{}".format(data.values.env.domain)
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app
+            port:
+              number: 8080

@@ -1,0 +1,13 @@
+#@ load("@ytt:data", "data")
+#@ load("helpers.lib.yml", "namespace", "labels")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app
+  namespace: #@ namespace()
+  labels: #@ labels("app")
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  app.message: #@ data.values.app.conf.message

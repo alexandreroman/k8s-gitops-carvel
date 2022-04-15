@@ -1,0 +1,12 @@
+#! Generate K8s manifest files with Helm using these commands:
+#! $ helm template hello-kubernetes charts/hello-kubernetes -f helm-values.yaml
+ingress:
+  configured: true
+  pathPrefix: ""
+deployment:
+  container:
+    image:
+      repository: ghcr.io/alexandreroman/hello-kubernetes
+      tag: "1.10"
+service:
+  type: ClusterIP

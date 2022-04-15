@@ -1,0 +1,8 @@
+#@ load("@ytt:data", "data")
+#@ load("helpers.lib.yml", "namespace", "labels")
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ namespace()
+  labels: #@ labels("app")

@@ -1,0 +1,6 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"metadata":{"name":"spring-on-k8s"}, "kind": "Deployment"}), expects=1
+---
+spec:
+  replicas: 3

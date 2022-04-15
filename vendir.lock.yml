@@ -1,0 +1,23 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #26 from paulbouwer/vuln-remediation-5Oct2021...'
+      sha: 913ea7222259ac48ffe1785f690427c4d98bd51a
+      tags:
+      - v1.10.1
+    path: .
+  path: 01-helm-install/charts
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #26 from paulbouwer/vuln-remediation-5Oct2021...'
+      sha: 913ea7222259ac48ffe1785f690427c4d98bd51a
+      tags:
+      - v1.10.1
+    path: .
+  path: 04-ytt-helm-template/charts
+- contents:
+  - directory: {}
+    path: .
+  path: 05-kapp-deploy/config
+kind: LockConfig

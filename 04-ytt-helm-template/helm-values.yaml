@@ -1,0 +1,10 @@
+ingress:
+  configured: true
+  pathPrefix: ""
+deployment:
+  container:
+    image:
+      repository: ghcr.io/alexandreroman/hello-kubernetes
+      tag: "1.10"
+service:
+  type: ClusterIP

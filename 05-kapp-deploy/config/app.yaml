@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-on-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-on-k8s
+  template:
+    metadata:
+      labels:
+        app: spring-on-k8s
+    spec:
+      containers:
+      - image: ghcr.io/alexandreroman/spring-on-k8s
+        name: app
+        resources:
+          limits:
+            memory: 1Gi
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/liveness
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/readiness

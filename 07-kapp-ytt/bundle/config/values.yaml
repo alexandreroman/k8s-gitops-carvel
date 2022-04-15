@@ -1,0 +1,12 @@
+#@data/values
+---
+env:
+  name: dev
+  domain: dev.corp
+
+app:
+  name: spring-on-k8s
+  version: 1.0.0
+  replicas: 1
+  conf:
+    message: Hello kapp+ytt!

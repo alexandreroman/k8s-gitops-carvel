@@ -1,0 +1,21 @@
+#@ load("@ytt:data", "data")
+#@ load("helpers.lib.yml", "namespace", "labels")
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app
+  namespace: #@ namespace()
+  labels: #@ labels("app")
+spec:
+  rules:
+  - host: #@ "springonk8s.{}".format(data.values.env.domain)
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app
+            port:
+              number: 8080

@@ -1,0 +1,8 @@
+#@data/values
+---
+env:
+  name: staging
+  domain: staging.corp
+
+app:
+  replicas: 3
